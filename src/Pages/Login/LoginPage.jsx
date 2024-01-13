@@ -1,30 +1,45 @@
-import React from 'react';
-import { Button, Form, Input } from 'antd';
-import { Typography } from 'antd';
+import React, { useState } from 'react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { Button, Form, Input, Typography } from 'antd';
+import userService from '../../services/userService';
+import './LoginPage.scss'
+import { toast } from 'react-toastify';
+
 const { Title } = Typography;
 
 const LoginPage = () => {
+    const [isLoading, setIsLoading] = useState(false)
 
-    const onFinish = (values) => {
-        console.log('Success:', values);
+    const navigate = useNavigate()
+
+    const onFinish = async (values) => {
+        setIsLoading(true)
+        const res = await userService.login(values)
+        if (res && res.accessToken) {
+            localStorage.setItem("accessToken", res.accessToken)
+            toast.success('Login successful!')
+            navigate('/')
+        }
+        else if (res && res.errorCode) {
+            toast.error(res.message)
+        }
+        else {
+            toast.error('Unable to connect to the server!')
+        }
+        setIsLoading(false)
     }
 
     return (
-        <div
-            style={{
-                height: '100vh',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}
+        <div className='login-page-container'
         >
             <Title level={2}>Login</Title>
             <Form
+                disabled={isLoading ? true : false}
                 name="basic"
                 labelCol={{
-                    span: 4,
+                    span: 24,
                 }}
+                size='large'
                 wrapperCol={{
                     span: 24,
                 }}
@@ -53,6 +68,7 @@ const LoginPage = () => {
                             message: 'Please input your email!',
                         },
                     ]}
+                    validateDebounce={500}
                 >
                     <Input />
                 </Form.Item>
@@ -73,7 +89,9 @@ const LoginPage = () => {
                         offset: 4,
                     }}
                 >
-                    <Button type="primary" htmlType="submit">
+                    <Button
+                        loading={isLoading ? true : false}
+                        type="primary" htmlType="submit">
                         Submit
                     </Button>
                 </Form.Item>
