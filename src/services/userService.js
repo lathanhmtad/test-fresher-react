@@ -7,6 +7,18 @@ class UserService {
             password
         })
     }
+
+    logout(userId) {
+        return axios.get(`api/v1/auth/logout/${userId}`)
+    }
+
+    getUserById(userId) {
+        return axios.get(`/api/v1/users/${userId}`)
+    }
+
+    getCurrentUser() {
+        return axios.get('api/v1/users/current')
+    }
 }
 
 export default new UserService()

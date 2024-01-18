@@ -14,23 +14,32 @@ import storage from 'redux-persist/lib/storage' // defaults to localStorage for 
 
 import themeReducer from './slices/themeSlice'
 import roleReducer from './slices/roleSlice';
+import userReducer from './slices/userSlice'
+import authReducer from './slices/authSlice'
 
-const persistConfig = {
-    key: 'root',
+const authPersistConfig = {
+    key: 'auth',
     version: 1,
     storage,
-    backlist: ['role']
-};
+    blacklist: ['userInfo']
+}
+
+const themePersistConfig = {
+    key: 'theme',
+    version: 1,
+    storage,
+}
 
 const reducers = combineReducers({
-    theme: themeReducer,
-    role: roleReducer
+    role: roleReducer,
+    user: userReducer,
+    theme: persistReducer(themePersistConfig, themeReducer),
+    auth: persistReducer(authPersistConfig, authReducer),
 });
 
-const persistedReducer = persistReducer(persistConfig, reducers)
 
 const store = configureStore({
-    reducer: persistedReducer,
+    reducer: reducers,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Layout, ConfigProvider, theme, Spin, message } from 'antd';
+import React, {  useState } from 'react';
+import { Layout, ConfigProvider, theme, Spin } from 'antd';
 import { FaReact } from "react-icons/fa";
 import SidebarMenu from '../Components/Admin/SidebarMenu/SidebarMenu';
 import { Outlet } from 'react-router-dom';
@@ -9,11 +9,10 @@ const { Sider, Content } = Layout;
 
 const AdminLayout = () => {
     const [collapsed, setCollapsed] = useState(false);
-
     const isDarkMode = useSelector(state => state.theme.isDarkMode)
 
     return (
-        <ConfigProvider
+        <ConfigProvider ConfigProvider
             theme={
                 {
                     algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
@@ -80,7 +79,7 @@ const AdminLayout = () => {
                     </Content>
                 </Layout>
             </Layout>
-        </ConfigProvider>
-    );
-};
+        </ConfigProvider >
+    )
+}
 export default AdminLayout;

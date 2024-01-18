@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Typography } from 'antd';
 import userService from '../../services/userService';
 import './LoginPage.scss'
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../../redux/slices/authSlice';
 
 const { Title } = Typography;
 
 const LoginPage = () => {
     const [isLoading, setIsLoading] = useState(false)
+    const dispatch = useDispatch()
 
     const navigate = useNavigate()
 
     const onFinish = async (values) => {
+        toast.dismiss()
         setIsLoading(true)
         const res = await userService.login(values)
         if (res && res.accessToken) {
-            localStorage.setItem("accessToken", res.accessToken)
             toast.success('Login successful!')
+            dispatch(loginSuccess(res.accessToken))
             navigate('/')
         }
         else if (res && res.errorCode) {

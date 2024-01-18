@@ -2,41 +2,55 @@ import { Layout, Button, Row, Col, Typography, Avatar } from 'antd';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    DownOutlined
+    DownOutlined,
 } from '@ant-design/icons';
 import { Dropdown, Space } from 'antd';
 import { LuSunMedium } from "react-icons/lu";
 import { CiDark } from "react-icons/ci";
+import { MdLogout } from "react-icons/md"
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleDarkMode } from '../../../redux/slices/themeSlice';
-import { useEffect } from 'react';
+import { doLogout } from '../../../redux/slices/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import userService from '../../../services/userService'
 
 const { Header } = Layout;
 
 const AdminHeader = (props) => {
     const { collapsed, setCollapsed } = props
     const isDarkMode = useSelector(state => state.theme.isDarkMode)
+    const currentUser = useSelector(state => state.auth.userInfo)
     const dispatch = useDispatch()
-
-    useEffect(() => {
-
-    }, [])
-
-    const url = 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg';
+    const navigate = useNavigate()
 
     const items = [
         {
+            key: 'profile',
             label: 'Profile',
-            key: '0',
         },
         {
             type: 'divider',
         },
         {
-            label: 'Logout',
-            key: '1',
+            key: 'logout',
+            label: <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>Logout <MdLogout /></div>,
         }
     ];
+
+    const handleDropdownItemClick = async ({ key }) => {
+        switch (key) {
+            case 'profile':
+                break;
+            case 'logout':
+                await userService.logout(currentUser.id)
+                dispatch(doLogout())
+                toast.success('Logout successful!')
+                navigate('/')
+                break
+            default:
+        }
+    }
 
     return (
         <Header
@@ -79,15 +93,18 @@ const AdminHeader = (props) => {
                         }}
                     />
                     <Dropdown
-                        menu={{
-                            items,
-                        }}
+                        menu={
+                            {
+                                items,
+                                onClick: handleDropdownItemClick
+                            }
+                        }
                         trigger={['click']}
                     >
                         <Typography.Link>
                             <Space>
-                                <Avatar src={<img src={url} alt="avatar" />} />
-                                Ant design
+                                <Avatar src={<img src={currentUser.photo} alt="avatar" />} />
+                                {currentUser.fullName}
                                 <DownOutlined />
                             </Space>
                         </Typography.Link>

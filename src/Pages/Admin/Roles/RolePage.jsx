@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Flex, Space, Typography } from "antd"
+import { Button, Flex, Space, Typography, Divider } from "antd"
 import { PlusCircleOutlined } from '@ant-design/icons'
 
 // import components
@@ -29,6 +29,7 @@ const RolePage = () => {
                     </Button>
                 </div>
             </Flex>
+            <Divider />
 
             <TableRole />
 

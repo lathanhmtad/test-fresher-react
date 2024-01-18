@@ -1,20 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Divider, Radio, Table } from 'antd';
-const columns = [
-    {
-        title: 'Id',
-        dataIndex: 'id',
-        render: (text) => <a>{text}</a>,
-    },
-    {
-        title: 'Name',
-        dataIndex: 'name',
-    },
-    {
-        title: 'Description',
-        dataIndex: 'description',
-    },
-];
+import { useDispatch } from 'react-redux';
+
 const data = [
     {
         key: '1',
@@ -42,42 +29,49 @@ const data = [
     },
 ];
 
-// rowSelection object indicates the need for row selection
-const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-    getCheckboxProps: (record) => ({
-        disabled: record.name === 'Disabled User',
-        // Column configuration not to be checked
-        name: record.name,
-    }),
-};
+
 const TableRole = () => {
-    const [selectionType, setSelectionType] = useState('checkbox');
+    const dispatch = useDispatch()
+    useEffect(() => {
+
+    }, [])
+
+    // rowSelection object indicates the need for row selection
+    const rowSelection = {
+        onChange: (selectedRowKeys, selectedRows) => {
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        },
+        getCheckboxProps: (record) => ({
+            disabled: record.name === 'Disabled User',
+            // Column configuration not to be checked
+            name: record.name,
+        }),
+    };
+
+    const columns = [
+        {
+            title: 'Id',
+            dataIndex: 'id',
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+        },
+        {
+            title: 'Description',
+            dataIndex: 'description',
+        },
+    ];
+
     return (
-        <div>
-            <Radio.Group
-                onChange={({ target: { value } }) => {
-                    setSelectionType(value);
-                }}
-                value={selectionType}
-            >
-                <Radio value="checkbox">Checkbox</Radio>
-                <Radio value="radio">radio</Radio>
-            </Radio.Group>
-
-            <Divider />
-
-            <Table
-                rowSelection={{
-                    type: selectionType,
-                    ...rowSelection,
-                }}
-                columns={columns}
-                dataSource={data}
-            />
-        </div>
+        <Table
+            rowSelection={{
+                type: 'checkbox',
+                ...rowSelection,
+            }}
+            columns={columns}
+            dataSource={data}
+        />
     );
 };
 export default TableRole;

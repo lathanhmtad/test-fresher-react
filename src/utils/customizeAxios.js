@@ -1,16 +1,22 @@
 import axios from "axios";
+import { doLogout, updateAccessToken } from "../redux/slices/authSlice";
+import { toast } from "react-toastify";
 
-// import dotenv from 'dotenv';
+let store
+
+export const injectStore = _store => {
+    store = _store
+}
 
 const instance = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
     withCredentials: true,
 });
 
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
     // Do something before request is sent
+    config.headers.Authorization = `Bearer ${store.getState().auth.userToken}`
     return config;
 }, function (error) {
     // Do something with request error
@@ -29,15 +35,21 @@ instance.interceptors.response.use(function (response) {
     const originalRequest = error.config
     // If the error status is 401 and there is no originalRequest._retry flag,
     // it means the token has expired and we need to refresh it
-    if(error.response && error.response.status === 401 && !originalRequest._retry) {
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true
+        const response = await instance.post('/api/v1/auth/refresh-token')
+        const { newAccessToken } = response
+        store.dispatch(updateAccessToken(newAccessToken))
+        originalRequest.headers.Authorization = `Bearer ${store.getState().auth.userToken}`
+        return instance.request(originalRequest)
+    }
 
-        try {
-            const response = await instance.post('/api/v1/refresh-token')
-            console.log(response)
-        } catch (error) {
-            // handle refresh token error or redirect to login
-        }
+    if (error.response && error.response.status === 403 && error.config.url === '/api/v1/auth/refresh-token') {
+        toast.error('Please login again to use the application!', {
+            toastId: 2,
+            autoClose: 7000
+        })
+        store.dispatch(doLogout())
     }
 
     if (error.response) {
