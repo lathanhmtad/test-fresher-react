@@ -12,8 +12,9 @@ import './App.scss'
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react';
 import userService from './services/userService';
-import { setUserInfo } from './redux/slices/authSlice';
+import { doLogout, setUserInfo } from './redux/slices/authSlice';
 import PrivateRoute from './Pages/ProtectedRoute/PrivateRoute';
+import AuthPage from './Pages/Auth/AuthPage';
 
 function App() {
   const isDarkMode = useSelector(state => state.theme.isDarkMode)
@@ -22,7 +23,12 @@ function App() {
 
   const getCurrentUser = async () => {
     const res = await userService.getCurrentUser()
-    dispatch(setUserInfo(res))
+    if (res && res.id) {
+      dispatch(setUserInfo(res))
+    }
+    else {
+      dispatch(doLogout())
+    }
   }
 
   useEffect(() => {
@@ -59,6 +65,10 @@ function App() {
     {
       path: '/register',
       element: <RegisterPage />
+    },
+    {
+      path: '/auth',
+      element: <AuthPage />
     },
     {
       path: '*',

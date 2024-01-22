@@ -1,12 +1,41 @@
 import { Button, Modal, Input, Form, Divider, Row, Col, Typography } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { toast } from 'react-toastify';
+import _ from 'lodash'
+import { useDispatch, useSelector } from 'react-redux';
+import { createRoles } from '../../../redux/slices/roles/roleThunk';
+import { useEffect } from 'react';
+import { resetIsCreateRolesSuccess } from '../../../redux/slices/roles/roleSlice';
+
 const ModalRole = (props) => {
+    const { loading, isCreateRolesSuccess } = useSelector(state => state.role)
     const { show, setShow } = props
     const [form] = Form.useForm();
     const [modal, contextHolder] = Modal.useModal();
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (isCreateRolesSuccess) {
+            toast.success('Create roles success!')
+            setShow(false)
+            form.resetFields()
+            dispatch(resetIsCreateRolesSuccess())
+        }
+    }, [isCreateRolesSuccess])
 
     const onFinish = (values) => {
-        console.log('Received values of form:', values);
+        if (_.isUndefined(values.roles) || _.isEmpty(values.roles)) {
+            toast.error('Please add fields for data entry!')
+        }
+        else {
+            modal.confirm({
+                title: 'Confirm creation',
+                content: 'Are you sure create?',
+                onOk: () => {
+                    dispatch(createRoles(values))
+                }
+            })
+        }
     }
 
     const showCloseConfirmation = () => {
@@ -14,6 +43,7 @@ const ModalRole = (props) => {
             title: 'Confirmation',
             content: 'Are you sure you want to close the modal?',
             onOk() {
+                toast.dismiss()
                 setShow(false);
                 form.resetFields();
             }
@@ -95,7 +125,10 @@ const ModalRole = (props) => {
                                     </Row>
                                 ))}
                                 <Form.Item>
-                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                    <Button type="dashed" onClick={() => {
+                                        toast.dismiss()
+                                        add()
+                                    }} block icon={<PlusOutlined />}>
                                         Add field
                                     </Button>
                                 </Form.Item>
@@ -104,7 +137,9 @@ const ModalRole = (props) => {
                     }
                 </Form.List>
                 <Form.Item>
-                    <Button type="primary" htmlType="submit">
+                    <Button
+                        loading={loading ? true : false}
+                        type="primary" htmlType="submit">
                         Submit
                     </Button>
                 </Form.Item>

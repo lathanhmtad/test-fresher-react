@@ -13,7 +13,7 @@ import {
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
 
 import themeReducer from './slices/themeSlice'
-import roleReducer from './slices/roleSlice';
+import roleReducer from './slices/roles/roleSlice';
 import userReducer from './slices/userSlice'
 import authReducer from './slices/authSlice'
 

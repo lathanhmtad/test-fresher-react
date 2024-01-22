@@ -5,6 +5,7 @@ import { PlusCircleOutlined } from '@ant-design/icons'
 // import components
 import ModalRole from "../../../Components/Admin/Roles/ModalRole";
 import TableRole from "../../../Components/Admin/Roles/TableRole";
+import DrawerDetailsRole from "../../../Components/Admin/Roles/DrawerDetailsRole";
 
 const RolePage = () => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -32,6 +33,8 @@ const RolePage = () => {
             <Divider />
 
             <TableRole />
+
+            <DrawerDetailsRole />
 
             <ModalRole
                 show={modalOpen}
