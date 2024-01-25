@@ -15,6 +15,8 @@ import userService from './services/userService';
 import { doLogout, setUserInfo } from './redux/slices/authSlice';
 import PrivateRoute from './Pages/ProtectedRoute/PrivateRoute';
 import AuthPage from './Pages/Auth/AuthPage';
+import UserPage from './Pages/Admin/Users/UserPage';
+import PermissionPage from './Pages/Admin/Permissions/PermissionPage';
 
 function App() {
   const isDarkMode = useSelector(state => state.theme.isDarkMode)
@@ -51,6 +53,14 @@ function App() {
         {
           path: 'roles',
           element: <RolePage />
+        },
+        {
+          path: 'users',
+          element: <UserPage />
+        },
+        {
+          path: 'permissions',
+          element: <PermissionPage />
         }
       ]
     },

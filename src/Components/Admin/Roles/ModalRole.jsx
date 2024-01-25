@@ -5,10 +5,10 @@ import _ from 'lodash'
 import { useDispatch, useSelector } from 'react-redux';
 import { createRoles } from '../../../redux/slices/roles/roleThunk';
 import { useEffect } from 'react';
-import { resetIsCreateRolesSuccess } from '../../../redux/slices/roles/roleSlice';
+import { resetErrorMessage, resetIsCreateRolesSuccess } from '../../../redux/slices/roles/roleSlice';
 
 const ModalRole = (props) => {
-    const { loading, isCreateRolesSuccess } = useSelector(state => state.role)
+    const { loading, isCreateRolesSuccess, errorMessage } = useSelector(state => state.role)
     const { show, setShow } = props
     const [form] = Form.useForm();
     const [modal, contextHolder] = Modal.useModal();
@@ -22,6 +22,13 @@ const ModalRole = (props) => {
             dispatch(resetIsCreateRolesSuccess())
         }
     }, [isCreateRolesSuccess])
+
+    useEffect(() => {
+        if(errorMessage) {
+            toast.error(errorMessage)
+            dispatch(resetErrorMessage())
+        }
+    }, [errorMessage])
 
     const onFinish = (values) => {
         if (_.isUndefined(values.roles) || _.isEmpty(values.roles)) {

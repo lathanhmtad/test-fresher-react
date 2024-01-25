@@ -3,7 +3,7 @@ import { Popconfirm, Table, Form, Typography, Space } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteRole, fetchRoleById, fetchRolesWithPagination, updateRole } from '../../../redux/slices/roles/roleThunk';
 import { ROLES_MAX_ITEMS_PER_PAGE } from '../../../utils/appConstants';
-import { resetIsUpdateSuccess, setCurrentPage } from '../../../redux/slices/roles/roleSlice';
+import { resetIsDeleteSuccess, resetIsUpdateSuccess, setCurrentPage } from '../../../redux/slices/roles/roleSlice';
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import EditableCell from './EditableCell';
 import { toast } from 'react-toastify';
@@ -15,7 +15,7 @@ const TableRole = () => {
     const dispatch = useDispatch()
 
     // redux state
-    const { loading, data, currentPage: current, totalElements, isUpdateSuccess } = useSelector(state => state.role)
+    const { loading, data, currentPage: current, totalElements, isUpdateSuccess, isDeleteSuccess } = useSelector(state => state.role)
 
     // fetch data effect
     useEffect(() => {
@@ -45,6 +45,13 @@ const TableRole = () => {
             dispatch(resetIsUpdateSuccess())
         }
     }, [isUpdateSuccess])
+
+    useEffect(() => {
+        if (isDeleteSuccess) {
+            toast.success('Delete success!')
+            dispatch(resetIsDeleteSuccess())
+        }
+    }, [isDeleteSuccess])
 
     // row selection
     const rowSelection = {

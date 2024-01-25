@@ -1,8 +1,9 @@
 import { Menu } from "antd"
 import {
     DashboardOutlined,
+    UserOutlined
 } from '@ant-design/icons';
-import { MdOutlineAdminPanelSettings } from "react-icons/md"
+import { MdOutlineAdminPanelSettings, MdOutlineSecurity } from "react-icons/md"
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -24,6 +25,18 @@ const SidebarMenu = () => {
             label: 'Roles',
             onClick: () => navigate('/admin/roles')
         },
+        {
+            key: '/admin/permissions',
+            icon: <MdOutlineSecurity />,
+            label: 'Permissions',
+            onClick: () => navigate('/admin/permissions')
+        },
+        {
+            key: '/admin/users',
+            icon: <UserOutlined />,
+            label: 'Users',
+            onClick: () => navigate('/admin/users')
+        }
     ]
 
 

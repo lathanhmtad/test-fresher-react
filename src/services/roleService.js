@@ -24,6 +24,17 @@ class RoleService {
     deleteRole(roleId) {
         return axios.delete(`/api/v1/roles/${roleId}`)
     }
+
+    assignPermissions(roleId, permissions) {
+        return axios.post('/api/v1/roles/assign-permission', {
+            roleId,
+            permissions
+        })
+    }
+
+    getPermission(roleId) {
+        return axios.get(`/api/v1/roles/permissions?roleId=${roleId}`)
+    }
 }
 
 export default new RoleService()

@@ -45,8 +45,8 @@ const AdminHeader = (props) => {
             case 'logout':
                 await userService.logout(currentUser.id)
                 dispatch(doLogout())
-                toast.success('Logout successful!')
-                navigate('/')
+                // navigate('/product')
+                toast.success('Logout successfully!')
                 break
             default:
         }

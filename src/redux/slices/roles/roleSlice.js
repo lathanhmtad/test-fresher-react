@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { fetchAllRoles, createRoles, updateRole, deleteRole, fetchRolesWithPagination, fetchRoleById } from './roleThunk'
+import { fetchAllRoles, createRoles, updateRole, deleteRole, fetchRolesWithPagination, fetchRoleById, assignPermissionsForRole } from './roleThunk'
 
 
 const initialState = {
@@ -10,8 +10,12 @@ const initialState = {
     currentPage: 1,
     isCreateRolesSuccess: false,
     isUpdateSuccess: false,
+    isDeleteSuccess: false,
+    isAssignSuccess: false,
     roleDetails: {},
-    showDrawerDetails: false
+    showDrawerDetails: false,
+    errorMessage: '',
+    roleOptions: []
 }
 
 export const roleSlice = createSlice({
@@ -26,6 +30,15 @@ export const roleSlice = createSlice({
         },
         resetIsUpdateSuccess: (state) => {
             state.isUpdateSuccess = false
+        },
+        resetIsDeleteSuccess: (state) => {
+            state.isDeleteSuccess = false
+        },
+        resetErrorMessage: (state) => {
+            state.errorMessage = ''
+        },
+        resetIsAssignSuccess: (state) => {
+            state.isAssignSuccess = false
         },
         setRoleDetails: (state, action) => {
             state.roleDetails = action.payload
@@ -51,6 +64,25 @@ export const roleSlice = createSlice({
                 state.loading = false
             })
 
+            // fetch all roles
+            .addCase(fetchAllRoles.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(fetchAllRoles.fulfilled, (state, action) => {
+                state.roleOptions = []
+                state.data = action.payload
+                for (let i = 0; i < state.data.length; i++) {
+                    state.roleOptions.push({
+                        label: state.data[i].name,
+                        value: state.data[i].id
+                    })
+                }
+                state.loading = false
+            })
+            .addCase(fetchAllRoles.rejected, (state) => {
+                state.loading = false
+            })
+
             // fetch role with id 
             .addCase(fetchRoleById.pending, (state) => {
                 state.loading = true
@@ -73,7 +105,21 @@ export const roleSlice = createSlice({
                 state.loading = false
                 state.currentPage = 1
             })
-            .addCase(createRoles.rejected, (state) => {
+            .addCase(createRoles.rejected, (state, action) => {
+                state.errorMessage = action.payload.message
+                state.loading = false
+            })
+
+            // assign permissions
+            .addCase(assignPermissionsForRole.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(assignPermissionsForRole.fulfilled, (state) => {
+                state.isAssignSuccess = true
+                state.loading = false
+            })
+            .addCase(assignPermissionsForRole.rejected, (state, action) => {
+                state.errorMessage = action.payload.message
                 state.loading = false
             })
 
@@ -93,18 +139,19 @@ export const roleSlice = createSlice({
             .addCase(deleteRole.pending, (state) => {
                 state.loading = true
             })
-            .addCase(deleteRole.fulfilled, (state, action) => {
+            .addCase(deleteRole.fulfilled, (state) => {
+                state.isDeleteSuccess = true
                 state.loading = false
             })
             .addCase(deleteRole.rejected, (state) => {
                 state.loading = false
             })
-
-
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { setCurrentPage, resetIsCreateRolesSuccess, resetIsUpdateSuccess, setRoleDetails, closeDrawer } = roleSlice.actions
+export const { setCurrentPage, resetIsCreateRolesSuccess, resetIsUpdateSuccess, resetIsAssignSuccess,
+    resetIsDeleteSuccess, setRoleDetails, closeDrawer, resetErrorMessage }
+    = roleSlice.actions
 
 export default roleSlice.reducer

@@ -14,8 +14,9 @@ import storage from 'redux-persist/lib/storage' // defaults to localStorage for 
 
 import themeReducer from './slices/themeSlice'
 import roleReducer from './slices/roles/roleSlice';
-import userReducer from './slices/userSlice'
+import userReducer from './slices/users/userSlice'
 import authReducer from './slices/authSlice'
+import permissionReducer from './slices/permissionSlice';
 
 const authPersistConfig = {
     key: 'auth',
@@ -33,6 +34,7 @@ const themePersistConfig = {
 const reducers = combineReducers({
     role: roleReducer,
     user: userReducer,
+    permission: permissionReducer,
     theme: persistReducer(themePersistConfig, themeReducer),
     auth: persistReducer(authPersistConfig, authReducer),
 });

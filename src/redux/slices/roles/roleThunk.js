@@ -34,6 +34,17 @@ export const createRoles = createAsyncThunk(
         if (_.isArray(response)) {
             thunkAPI.dispatch(fetchRolesWithPagination({ page: 1, size: ROLES_MAX_ITEMS_PER_PAGE }))
         }
+        else {
+            return thunkAPI.rejectWithValue(response)
+        }
+    }
+)
+
+
+export const assignPermissionsForRole = createAsyncThunk(
+    'roles/assignPermissions',
+    async (payload) => {
+        const response = await roleService.assignPermissions(payload.roleId, payload.permissions)
         return response
     }
 )

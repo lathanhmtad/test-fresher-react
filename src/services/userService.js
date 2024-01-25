@@ -9,7 +9,11 @@ class UserService {
     }
 
     logout(userId) {
-        return axios.get(`api/v1/auth/logout/${userId}`)
+        return axios.get(`/api/v1/auth/logout/${userId}`)
+    }
+
+    getUserWithPagination(page, size) {
+        return axios.get(`/api/v1/users?page=${page}&limit=${size}`)
     }
 
     getUserById(userId) {
@@ -19,6 +23,16 @@ class UserService {
     getCurrentUser() {
         return axios.get('api/v1/users/current')
     }
+
+    createNewUser(formData) {
+        return axios.post('/api/v1/users', formData, {
+            headers: {
+                "Content-Type": 'multipart/form-data'
+            }
+        })
+    }
 }
 
-export default new UserService()
+const userService = new UserService()
+
+export default userService
